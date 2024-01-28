@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "931037640541",
+    "project_id": "fir-c3182",
+    "storage_bucket": "fir-c3182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931037640541:android:ff7e1a8a7cbc19a2f51ab4",
+        "android_client_info": {
+          "package_name": "com.adrian_pol.firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhLvSAJi4pdc6pzxGQRg11vEMojmUshew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
