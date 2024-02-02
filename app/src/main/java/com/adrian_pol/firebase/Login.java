@@ -49,9 +49,13 @@ public class Login extends Fragment {
                 String gmail = String.valueOf(binding.emailText.getText());
                 String password = String.valueOf(binding.passwordText.getText());
                 if (!gmail.isEmpty() && !password.isEmpty()) {
-                    createUser(gmail, password);
-                    NavHostFragment.findNavController(Login.this)
-                            .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    if(password.length() >=6) {
+                        createUser(gmail, password);
+                        NavHostFragment.findNavController(Login.this)
+                                .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    }else {
+                        Toast.makeText(getContext(),"The password is to short, minim 6 digits",Toast.LENGTH_SHORT).show();
+                    }
                 }else {
                     Toast.makeText(getContext(),"Complete the information",Toast.LENGTH_SHORT).show();
                 }
