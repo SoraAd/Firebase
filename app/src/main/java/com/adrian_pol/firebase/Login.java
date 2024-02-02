@@ -51,11 +51,22 @@ public class Login extends Fragment {
                 if (!gmail.isEmpty() && !password.isEmpty()) {
                     if(password.length() >=6) {
                         createUser(gmail, password);
-                        NavHostFragment.findNavController(Login.this)
-                                .navigate(R.id.action_FirstFragment_to_SecondFragment);
                     }else {
                         Toast.makeText(getContext(),"The password is to short, minim 6 digits",Toast.LENGTH_SHORT).show();
                     }
+                }else {
+                    Toast.makeText(getContext(),"Complete the information",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        binding.loginButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String gmail = String.valueOf(binding.emailText.getText());
+                String password = String.valueOf(binding.passwordText.getText());
+                if (!gmail.isEmpty() && !password.isEmpty()) {
+                    loginUser(gmail, password);
                 }else {
                     Toast.makeText(getContext(),"Complete the information",Toast.LENGTH_SHORT).show();
                 }
@@ -79,6 +90,29 @@ public class Login extends Fragment {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
+                        }
+                    }
+                });
+    }
+
+    public void loginUser(String gmail, String password){
+        String TAG = "Inicio sesion";
+        mAuth.signInWithEmailAndPassword(gmail, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            NavHostFragment.findNavController(Login.this)
+                                    .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
                         }
                     }
                 });
