@@ -18,16 +18,32 @@ import com.adrian_pol.firebase.databinding.FragmentLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import org.w3c.dom.Text;
+
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 
 public class Login extends Fragment {
 
     private FragmentLoginBinding binding;
     private FirebaseAuth mAuth;
+    private DatabaseReference database;
+    private FirebaseRemoteConfig remoteConfig;
+    boolean registerUser1;
+    boolean registerUser2;
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -35,13 +51,55 @@ public class Login extends Fragment {
     ) {
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
+        ocultarButtonRegist();
 
         return binding.getRoot();
 
     }
 
+    public void updateBooleanRegister(){
+
+        if(!registerUser1){
+            database.child("registro_1").setValue(true);
+            registerUser1 = true;
+        }
+        if (!registerUser2) {
+            database.child("registro_2").setValue(true);
+        }
+        ocultarButtonRegist();
+    }
+    public void ocultarButtonRegist(){
+        database.child("registro_1").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(!task.isSuccessful()){
+                    Log.e("Error Task","Error ",task.getException());
+                }else {
+                    Log.d("Task", task.getResult().getValue().toString());
+                    registerUser1 = Boolean.parseBoolean(task.getResult().getValue().toString());
+                    Log.d("TaskFinis", String.valueOf(registerUser1));
+
+                }
+            }
+        });
+        database.child("registro_2").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                Log.d("Task", task.getResult().getValue().toString());
+                registerUser2 = Boolean.parseBoolean(task.getResult().getValue().toString());
+                Log.d("TaskFinis", String.valueOf(registerUser2));
+                Log.d("Comprobacion", registerUser1+" "+registerUser2);
+
+                if (registerUser1 && registerUser2) {
+                    binding.registerButtom.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+    }
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         binding.registerButtom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +142,10 @@ public class Login extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            updateBooleanRegister();
+                            loginUser(gmail,password);
                             updateUI(user);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -94,6 +155,9 @@ public class Login extends Fragment {
                     }
                 });
     }
+
+
+
 
     public void loginUser(String gmail, String password){
         String TAG = "Inicio sesion";
@@ -142,5 +206,7 @@ public class Login extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance("https://fir-c3182-default-rtdb.europe-west1.firebasedatabase.app").getReference("usuarios");
     }
 }
