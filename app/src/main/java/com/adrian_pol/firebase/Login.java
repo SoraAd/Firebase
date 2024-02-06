@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -41,7 +42,6 @@ public class Login extends Fragment {
     private FragmentLoginBinding binding;
     private FirebaseAuth mAuth;
     private DatabaseReference database;
-    private FirebaseRemoteConfig remoteConfig;
     boolean registerUser1;
     boolean registerUser2;
     @Override
@@ -51,33 +51,29 @@ public class Login extends Fragment {
     ) {
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        ocultarButtonRegist();
+        getBooleanBBDDRegister();
+        updateBooleanRegister();
 
         return binding.getRoot();
 
     }
 
     public void updateBooleanRegister(){
-
         if(!registerUser1){
             database.child("registro_1").setValue(true);
-            registerUser1 = true;
         }
-        if (!registerUser2) {
+        if (registerUser1 && !registerUser2) {
             database.child("registro_2").setValue(true);
         }
-        ocultarButtonRegist();
     }
-    public void ocultarButtonRegist(){
+    public void getBooleanBBDDRegister(){
         database.child("registro_1").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(!task.isSuccessful()){
                     Log.e("Error Task","Error ",task.getException());
                 }else {
-                    Log.d("Task", task.getResult().getValue().toString());
                     registerUser1 = Boolean.parseBoolean(task.getResult().getValue().toString());
-                    Log.d("TaskFinis", String.valueOf(registerUser1));
 
                 }
             }
@@ -85,22 +81,24 @@ public class Login extends Fragment {
         database.child("registro_2").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                Log.d("Task", task.getResult().getValue().toString());
-                registerUser2 = Boolean.parseBoolean(task.getResult().getValue().toString());
-                Log.d("TaskFinis", String.valueOf(registerUser2));
-                Log.d("Comprobacion", registerUser1+" "+registerUser2);
+                if(!task.isSuccessful()){
+                    Log.e("Error Task","Error ",task.getException());
+                }else {
+                    registerUser2 = Boolean.parseBoolean(task.getResult().getValue().toString());
+                }
+
 
                 if (registerUser1 && registerUser2) {
                     binding.registerButtom.setVisibility(View.INVISIBLE);
+                }else {
+                    binding.registerButtom.setVisibility(View.VISIBLE);
                 }
             }
         });
-
     }
+
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         binding.registerButtom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,24 +137,23 @@ public class Login extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateBooleanRegister();
+                            getBooleanBBDDRegister();
                             loginUser(gmail,password);
+
                             updateUI(user);
 
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+
                             updateUI(null);
                         }
                     }
                 });
     }
-
-
 
 
     public void loginUser(String gmail, String password){
@@ -202,6 +199,28 @@ public class Login extends Fragment {
         }
     }
 
+
+    /*private void registrarDispositivo(){
+        String TAG = "Mensajes";
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }*/
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

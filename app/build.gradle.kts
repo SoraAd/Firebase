@@ -65,4 +65,6 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
 
     implementation("com.google.firebase:firebase-config")
+
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
 }
