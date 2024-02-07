@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,8 @@ import com.adrian_pol.firebase.databinding.FragmentDocumentBinding;
 public class Document extends Fragment {
 
     private FragmentDocumentBinding binding;
+    private TextView title;
+    private TextView body;
 
     @Override
     public View onCreateView(
@@ -21,6 +24,8 @@ public class Document extends Fragment {
     ) {
 
         binding = FragmentDocumentBinding.inflate(inflater, container, false);
+        title = binding.titleText;
+        body = binding.bodyText;
         return binding.getRoot();
 
     }
@@ -36,6 +41,7 @@ public class Document extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onDestroyView() {

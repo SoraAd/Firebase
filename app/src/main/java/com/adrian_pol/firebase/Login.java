@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.adrian_pol.firebase.Datos.Datos;
 import com.adrian_pol.firebase.databinding.FragmentLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,6 +41,7 @@ import java.util.concurrent.Executor;
 
 public class Login extends Fragment {
 
+    private Datos datos;
     private FragmentLoginBinding binding;
     private FirebaseAuth mAuth;
     private DatabaseReference database;
@@ -179,6 +182,27 @@ public class Login extends Fragment {
                 });
     }
 
+    public void getToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = token;
+                        Log.d("TAG", msg);
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void updateUI(FirebaseUser o) {
     }
 
@@ -200,32 +224,12 @@ public class Login extends Fragment {
     }
 
 
-    /*private void registrarDispositivo(){
-        String TAG = "Mensajes";
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }*/
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        datos = new Datos();
         mAuth = FirebaseAuth.getInstance();
 
-        database = FirebaseDatabase.getInstance("https://fir-c3182-default-rtdb.europe-west1.firebasedatabase.app").getReference("usuarios");
+        database = FirebaseDatabase.getInstance(datos.getURL_FIREBASE_BBDD()).getReference("usuarios");
     }
 }
