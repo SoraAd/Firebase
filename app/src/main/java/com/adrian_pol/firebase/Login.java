@@ -1,6 +1,9 @@
 package com.adrian_pol.firebase;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -47,6 +53,32 @@ public class Login extends Fragment {
     private DatabaseReference database;
     boolean registerUser1;
     boolean registerUser2;
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // TODO: Inform user that that your app will not show notifications.
+                }
+            });
+
+    private void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                // TODO: display an educational UI explaining to the user the features that will be enabled
+                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+                //       If the user selects "No thanks," allow the user to continue without notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -54,8 +86,7 @@ public class Login extends Fragment {
     ) {
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        getBooleanBBDDRegister();
-        updateBooleanRegister();
+
 
         return binding.getRoot();
 
@@ -197,7 +228,7 @@ public class Login extends Fragment {
 
                         // Log and toast
                         String msg = token;
-                        Log.d("TAG", msg);
+                        Log.d("TAG-Token", msg);
                         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -218,6 +249,9 @@ public class Login extends Fragment {
         //https://firebase.google.com/docs/auth/android/password-auth?authuser=0&hl=es
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        getToken();
+        getBooleanBBDDRegister();
+        updateBooleanRegister();
         if(currentUser != null){
             //Detecta usuario iniciado
         }
@@ -229,6 +263,8 @@ public class Login extends Fragment {
         super.onCreate(savedInstanceState);
         datos = new Datos();
         mAuth = FirebaseAuth.getInstance();
+
+        askNotificationPermission();
 
         database = FirebaseDatabase.getInstance(datos.getURL_FIREBASE_BBDD()).getReference("usuarios");
     }
