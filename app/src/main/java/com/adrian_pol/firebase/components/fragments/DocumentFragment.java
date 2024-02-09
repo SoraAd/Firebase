@@ -63,8 +63,6 @@ public class DocumentFragment extends Fragment {
         binding = FragmentDocumentBinding.inflate(inflater, container, false);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        loadToken();
-        getToken();
         ArrayList<String> registro = new ArrayList<>();
 
         usuarioActual = user.getEmail();
@@ -141,10 +139,7 @@ public class DocumentFragment extends Fragment {
                 Log.d(TAG,"Entra");
                 if (getActivity() == null) return;
                 token1 = (String) document.get("token");
-                Log.d(TAG,token1.substring(0,token1.indexOf("+")));
-                Log.d(TAG,token1.substring(token1.indexOf("+")+1));
                 token2 = (String) document.get("token2");
-                Log.d(TAG,token2.toString());
             }
 
             @Override
@@ -158,7 +153,6 @@ public class DocumentFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        saveDataToken();
 
         binding = null;
     }

@@ -174,12 +174,7 @@ public class Login extends Fragment {
             firestoreAccessToken.saveDocument("token1",save);
 
         }
-        /*if(usuarioActual.equals(token2.substring(0,token2.indexOf("+")))){
-            if(!tokenActual.equals(token2.substring(token2.indexOf("+")+1))){
-                String save = usuarioActual +"+"+tokenActual;
-                firestoreAccessToken.saveDocument(token1,save);
-            }
-        }*/
+
     }
     public void createUser(String gmail, String password){
         String TAG = "Registro";
@@ -213,7 +208,6 @@ public class Login extends Fragment {
                             FirebaseUser user = mAuth.getCurrentUser();
                             NavHostFragment.findNavController(Login.this)
                                     .navigate(R.id.action_FirstFragment_to_SecondFragment);
-                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
