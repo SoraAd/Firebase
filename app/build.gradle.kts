@@ -33,6 +33,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    buildToolsVersion = "33.0.1"
 }
 
 dependencies {
@@ -65,6 +66,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
 
     implementation("com.google.firebase:firebase-config")
+
 
     implementation("com.google.firebase:firebase-messaging:23.4.0")
     implementation("com.google.firebase:firebase-messaging-directboot:23.4.0")

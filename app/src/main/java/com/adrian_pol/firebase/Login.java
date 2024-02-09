@@ -87,12 +87,12 @@ public class Login extends Fragment {
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-
         return binding.getRoot();
 
     }
 
     public void updateBooleanRegister(){
+        //Cambiar Boolean
         if(!registerUser1){
             database.child("registro_1").setValue(true);
         }
@@ -176,14 +176,9 @@ public class Login extends Fragment {
                             updateBooleanRegister();
                             getBooleanBBDDRegister();
                             loginUser(gmail,password);
-
-                            updateUI(user);
-
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-
-                            updateUI(null);
                         }
                     }
                 });
@@ -207,34 +202,9 @@ public class Login extends Fragment {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
                     }
                 });
-    }
-
-    public void getToken(){
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        String msg = token;
-                        Log.d("TAG-Token", msg);
-                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void updateUI(FirebaseUser o) {
     }
 
     @Override
@@ -245,16 +215,8 @@ public class Login extends Fragment {
 
     @Override
     public void onStart() {
-        //Registro E Inicio de sesion
-        //https://firebase.google.com/docs/auth/android/password-auth?authuser=0&hl=es
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        getToken();
         getBooleanBBDDRegister();
-        updateBooleanRegister();
-        if(currentUser != null){
-            //Detecta usuario iniciado
-        }
     }
 
 
@@ -263,6 +225,25 @@ public class Login extends Fragment {
         super.onCreate(savedInstanceState);
         datos = new Datos();
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            System.out.println("Fetching FCM registration token failed");
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        System.out.println(token);
+                        Toast.makeText(getContext(),"Your device registration token is "+ token
+                                , Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         askNotificationPermission();
 
