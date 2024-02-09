@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.adrian_pol.firebase.components.fragments.Document"
+        android:name="com.adrian_pol.firebase.components.fragments.DocumentFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_document">
 
