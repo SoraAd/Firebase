@@ -13,6 +13,10 @@
     <string name="buttom_login">Login</string>
     <string name="msg_token_fmt">s</string>
 
+    <string name="title_hint">Enter title here...</string>
+    <string name="body_hint">Enter body text here...</string>
+    <string name="save">Save</string>
+
     <string name="channel_name">NotificationFirebase</string>
     <string name="channel_description">DescriptionFirebase</string>
 </resources>

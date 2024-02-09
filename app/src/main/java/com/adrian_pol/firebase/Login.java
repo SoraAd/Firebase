@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.adrian_pol.firebase.Datos.Datos;
+import com.adrian_pol.firebase.datos.Datos;
 import com.adrian_pol.firebase.databinding.FragmentLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,7 +47,6 @@ import java.util.concurrent.Executor;
 
 public class Login extends Fragment {
 
-    private Datos datos;
     private FragmentLoginBinding binding;
     private FirebaseAuth mAuth;
     private DatabaseReference database;
@@ -223,7 +222,6 @@ public class Login extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        datos = new Datos();
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseMessaging.getInstance().getToken()
@@ -247,6 +245,6 @@ public class Login extends Fragment {
 
         askNotificationPermission();
 
-        database = FirebaseDatabase.getInstance(datos.getURL_FIREBASE_BBDD()).getReference("usuarios");
+        database = FirebaseDatabase.getInstance(Datos.getUrlFirebaseBbdd()).getReference("usuarios");
     }
 }
