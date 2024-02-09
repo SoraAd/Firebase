@@ -1,4 +1,4 @@
-package com.adrian_pol.firebase;
+package com.adrian_pol.firebase.firebase;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.adrian_pol.firebase.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

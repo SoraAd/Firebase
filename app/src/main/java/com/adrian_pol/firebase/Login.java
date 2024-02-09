@@ -23,6 +23,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.adrian_pol.firebase.datos.Datos;
 import com.adrian_pol.firebase.databinding.FragmentLoginBinding;
+import com.adrian_pol.firebase.firebase.FirestoreAccessToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
@@ -50,8 +51,9 @@ public class Login extends Fragment {
     private FragmentLoginBinding binding;
     private FirebaseAuth mAuth;
     private DatabaseReference database;
-    boolean registerUser1;
-    boolean registerUser2;
+    private boolean registerUser1;
+    private boolean registerUser2;
+    private String tokenActual;
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -163,6 +165,22 @@ public class Login extends Fragment {
         });
     }
 
+    public void saveDataToken(String usuarioActual){
+
+        FirestoreAccessToken firestoreAccessToken = new FirestoreAccessToken();
+
+        if(!registerUser1){
+            String save = usuarioActual +"+"+tokenActual;
+            firestoreAccessToken.saveDocument("token1",save);
+
+        }
+        /*if(usuarioActual.equals(token2.substring(0,token2.indexOf("+")))){
+            if(!tokenActual.equals(token2.substring(token2.indexOf("+")+1))){
+                String save = usuarioActual +"+"+tokenActual;
+                firestoreAccessToken.saveDocument(token1,save);
+            }
+        }*/
+    }
     public void createUser(String gmail, String password){
         String TAG = "Registro";
         mAuth.createUserWithEmailAndPassword(gmail,password)
@@ -232,14 +250,7 @@ public class Login extends Fragment {
                             System.out.println("Fetching FCM registration token failed");
                             return;
                         }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        System.out.println(token);
-                        Toast.makeText(getContext(),"Your device registration token is "+ token
-                                , Toast.LENGTH_SHORT).show();
+                        tokenActual = task.getResult();
                     }
                 });
 

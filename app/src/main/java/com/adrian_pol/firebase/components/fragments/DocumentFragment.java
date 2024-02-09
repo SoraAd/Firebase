@@ -15,7 +15,17 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.adrian_pol.firebase.R;
 import com.adrian_pol.firebase.databinding.FragmentDocumentBinding;
 import com.adrian_pol.firebase.firebase.FirestoreAccess;
+import com.adrian_pol.firebase.firebase.FirestoreAccessToken;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 public class DocumentFragment extends Fragment {
@@ -23,6 +33,26 @@ public class DocumentFragment extends Fragment {
 
     private FragmentDocumentBinding binding;
     private FirestoreAccess firestoreAccess = new FirestoreAccess();
+    private FirestoreAccessToken firestoreAccessToken = new FirestoreAccessToken();
+    private FirebaseUser user;
+    private String tokenActual;
+    private String token1;
+    private String token2;
+    private String usuarioActual;
+    public void getToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        tokenActual = task.getResult();
+                        Log.d("TAG-Token", tokenActual);
+                    }
+                });
+    }
 
     @Override
     public View onCreateView(
@@ -31,6 +61,17 @@ public class DocumentFragment extends Fragment {
     ) {
 
         binding = FragmentDocumentBinding.inflate(inflater, container, false);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        loadToken();
+        getToken();
+        ArrayList<String> registro = new ArrayList<>();
+
+        usuarioActual = user.getEmail();
+
+        registro.add(user.getEmail());
+        registro.add(tokenActual);
+        Log.d("ComprobarArray",user.getEmail());
         return binding.getRoot();
 
     }
@@ -75,9 +116,50 @@ public class DocumentFragment extends Fragment {
     }
 
 
+    public void saveDataToken(){
+
+
+        if(usuarioActual.equals(token1.substring(0,token1.indexOf("+")))){
+            if(!tokenActual.equals(token1.substring(token1.indexOf("+")+1))){
+                String save = usuarioActual +"+"+tokenActual;
+                firestoreAccessToken.saveDocument("token",save);
+            }
+        }
+        if(usuarioActual.equals(token2.substring(0,token2.indexOf("+")))){
+            if(!tokenActual.equals(token2.substring(token2.indexOf("+")+1))){
+                String save = usuarioActual +"+"+tokenActual;
+                firestoreAccessToken.saveDocument(token1,save);
+            }
+        }
+    }
+
+    public void loadToken() {
+        Log.d(TAG, "Loading token...");
+        firestoreAccessToken.getDocument(new FirestoreAccessToken.DocumentCallback() {
+            @Override
+            public void onDocumentReceived(Map<String, Object> document) {
+                Log.d(TAG,"Entra");
+                if (getActivity() == null) return;
+                token1 = (String) document.get("token");
+                Log.d(TAG,token1.substring(0,token1.indexOf("+")));
+                Log.d(TAG,token1.substring(token1.indexOf("+")+1));
+                token2 = (String) document.get("token2");
+                Log.d(TAG,token2.toString());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error loading document", Toast.LENGTH_SHORT).show());
+            }
+        });
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        saveDataToken();
+
         binding = null;
     }
 
