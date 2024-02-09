@@ -67,4 +67,6 @@ dependencies {
     implementation("com.google.firebase:firebase-config")
 
     implementation("com.google.firebase:firebase-messaging:23.4.0")
+
+    implementation("com.google.firebase:firebase-firestore:24.10.1")
 }

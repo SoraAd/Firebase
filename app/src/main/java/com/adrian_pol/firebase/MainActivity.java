@@ -19,7 +19,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.adrian_pol.firebase.databinding.ActivityMainBinding;
+import com.adrian_pol.firebase.firebase.FirestoreAccess;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 

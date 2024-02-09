@@ -1,13 +1,10 @@
 package com.adrian_pol.firebase;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,29 +12,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.adrian_pol.firebase.Datos.Datos;
+import com.adrian_pol.firebase.datos.Datos;
 import com.adrian_pol.firebase.databinding.FragmentLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.concurrent.Executor;
 
 public class Login extends Fragment {
 
@@ -230,6 +215,6 @@ public class Login extends Fragment {
         datos = new Datos();
         mAuth = FirebaseAuth.getInstance();
 
-        database = FirebaseDatabase.getInstance(datos.getURL_FIREBASE_BBDD()).getReference("usuarios");
+        database = FirebaseDatabase.getInstance(datos.getUrlFirebaseBbdd()).getReference("usuarios");
     }
 }

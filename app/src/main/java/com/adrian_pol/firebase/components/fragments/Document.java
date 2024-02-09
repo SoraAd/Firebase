@@ -1,4 +1,4 @@
-package com.adrian_pol.firebase;
+package com.adrian_pol.firebase.components.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.adrian_pol.firebase.R;
 import com.adrian_pol.firebase.databinding.FragmentDocumentBinding;
+import com.adrian_pol.firebase.firebase.FirestoreAccess;
+
 public class Document extends Fragment {
 
     private FragmentDocumentBinding binding;
@@ -24,8 +27,8 @@ public class Document extends Fragment {
     ) {
 
         binding = FragmentDocumentBinding.inflate(inflater, container, false);
-        title = binding.titleText;
-        body = binding.bodyText;
+        title = binding.titleEditText;
+        body = binding.bodyEditText;
         return binding.getRoot();
 
     }
