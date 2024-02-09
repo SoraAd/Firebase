@@ -23,8 +23,6 @@ import java.util.ArrayList;
 public class Document extends Fragment {
 
     private FragmentDocumentBinding binding;
-    private TextView title;
-    private TextView body;
     private String tokenActual;
     private FirebaseUser user;
 
@@ -35,8 +33,6 @@ public class Document extends Fragment {
     ) {
 
         binding = FragmentDocumentBinding.inflate(inflater, container, false);
-        title = binding.titleText;
-        body = binding.bodyText;
         user = FirebaseAuth.getInstance().getCurrentUser();
         getToken();
 
